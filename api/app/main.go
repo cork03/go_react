@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-rest-api/db"
+)
 
 func main() {
+	db.Main()
 	fmt.Println("Hello, World!")
 }

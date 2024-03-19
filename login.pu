@@ -1,0 +1,55 @@
+package 下書き <<Folder>> {
+  entity "draftCompany" {
+    *id
+    --
+    draft_id
+    company_name
+    postal_code
+    prefectures
+    town
+    area
+    tel
+  }
+  entity "draftUser" {
+    *id
+    --
+    draft_id
+    email
+    name
+    password
+  }
+  entity "draft" {
+    *id
+    --
+    hash
+    expire
+  }
+}
+
+entity "user" {
+  *id
+  --
+  email
+  name
+  company_id
+}
+
+entity "user_password" {
+  *id
+  --
+  user_id
+  password
+}
+
+entity "compay" {
+  *id
+  --
+  company_name
+  postal_code
+  prefectures
+  town
+  area
+  tel
+  created_at
+  updated_at
+}
