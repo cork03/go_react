@@ -1,0 +1,25 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: factory
+profiles:
+  - name: local
+    activation:
+      - kubeContext: k3d-local
+        command: dev
+    build:
+      artifacts:
+        - image: factory-api-db
+          context: ./
+          docker:
+              dockerfile: ./db/Dockerfile
+    deploy:
+      helm:
+        releases:
+          - name: factory-db
+            chartPath: ./db/helm
+            namespace: factory
+    portForward:
+      - resourceType: Service
+        resourceName: factory-api-db-service
+        port: 3307

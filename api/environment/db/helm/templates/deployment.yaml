@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factory-api-db
+  labels:
+    app: factory-api-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: factory-api-db
+  template:
+    metadata:
+      labels:
+        app: factory-api-db
+    spec:
+      containers:
+      - name: factory-api-db
+        image: factory-api-db:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
