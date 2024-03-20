@@ -22,4 +22,5 @@ profiles:
     portForward:
       - resourceType: Service
         resourceName: factory-api-db-service
-        port: 3307
+        port: 3306
+        localPort: 3307
