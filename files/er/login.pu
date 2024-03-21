@@ -2,7 +2,7 @@ package 下書き <<Folder>> {
   entity "draftCompany" {
     *id
     --
-    draft_id
+    *draft_id
     company_name
     postal_code
     prefectures
@@ -18,7 +18,7 @@ package 下書き <<Folder>> {
     name
     password
   }
-  entity "draft" {
+  entity "mail_certification" {
     *id
     --
     hash
@@ -50,6 +50,7 @@ entity "compay" {
   town
   area
   tel
-  created_at
-  updated_at
 }
+
+compay ||-|{ user
+user ||-|| user_password
