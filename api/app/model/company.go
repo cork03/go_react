@@ -7,6 +7,6 @@ type Company struct {
 	Prefecture string `gorm:"not null;type:varchar(255)"`
 	Town       string `gorm:"not null;type:varchar(255)"`
 	Area       string `gorm:"not null;type:varchar(255)"`
-	Tel        uint   `gorm:"not null;type:varchar(255)"`
+	Tel        string `gorm:"not null;type:varchar(255)"`
 	User       []User
 }
