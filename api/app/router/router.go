@@ -3,6 +3,9 @@ package router
 import (
 	"github.com/labstack/echo/v4"
 	"go-rest-api/controller"
+	"go-rest-api/db"
+	"go-rest-api/driver"
+	"go-rest-api/gateway"
 	"go-rest-api/usecase"
 )
 
@@ -13,7 +16,10 @@ func NewRouter() *echo.Echo {
 		return c.String(200, "Hello, World!")
 	})
 
-	controller := controller.NewUserController(usecase.NewSignUpUsecase())
+	db := db.Main()
+	CompanyGateway := gateway.NewCompanyGateway(driver.NewCompanyDriver(db))
+	SignUpUsecase := usecase.NewSignUpUsecase(CompanyGateway)
+	controller := controller.NewUserController(SignUpUsecase)
 	e.POST("/signup", controller.SignUp)
 
 	return e
