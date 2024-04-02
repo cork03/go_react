@@ -19,7 +19,9 @@ func NewRouter() *echo.Echo {
 	db := db.Main()
 	CompanyDriver := driver.NewCompanyDriver(db)
 	CompanyGateway := gateway.NewCompanyGateway(CompanyDriver)
-	SignUpUsecase := usecase.NewSignUpUsecase(CompanyGateway)
+	MailCertificationDriver := driver.NewMailCertificationDriver(db)
+	MailCertificationGateway := gateway.NewMailCertificationGateway(MailCertificationDriver)
+	SignUpUsecase := usecase.NewSignUpUsecase(CompanyGateway, MailCertificationGateway)
 	SignUpController := controller.NewUserController(SignUpUsecase)
 	e.POST("/signup", SignUpController.SignUp)
 

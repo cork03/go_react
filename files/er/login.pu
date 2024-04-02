@@ -2,54 +2,60 @@ package 下書き <<Folder>> {
   entity "draftCompany" {
     *id
     --
-    *draft_id
-    company_name
-    postal_code
-    prefectures
-    town
-    area
-    tel
+    *mail_certification_id
+    *company_name
+    *postal_code
+    *prefectures
+    *town
+    *area
+    *tel
   }
   entity "draftUser" {
     *id
     --
-    draft_id
-    email
-    name
-    password
+    *mail_certification_id
+    *email
+    *name
   }
+  entity "draftUserPassword" {
+    *id
+    --
+    *mail_certification_id
+    *password
+  }
+
   entity "mail_certification" {
     *id
     --
-    hash
-    expire
+    *token
+    *expire
   }
 }
 
 entity "user" {
   *id
   --
-  email
-  name
-  company_id
+  *email
+  *name
+  *company_id
 }
 
 entity "user_password" {
   *id
   --
-  user_id
-  password
+  *user_id
+  *password
 }
 
 entity "compay" {
   *id
   --
-  company_name
-  postal_code
-  prefectures
-  town
-  area
-  tel
+  *company_name
+  *postal_code
+  *prefectures
+  *town
+  *area
+  *tel
 }
 
 compay ||-|{ user

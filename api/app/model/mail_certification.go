@@ -4,7 +4,7 @@ import "time"
 
 type MailCertification struct {
 	ID           uint
-	Hash         string       `gorm:"not null"`
+	Token        string       `gorm:"not null"`
 	Expire       time.Time    `gorm:"not null"`
 	DraftUser    DraftUser    `gorm:"constraint:OnDelete:CASCADE"`
 	DraftCompany DraftCompany `gorm:"constraint:OnDelete:CASCADE"`
