@@ -1,0 +1,3 @@
+# 概要
+goとreactを使ったアプリケーションの作成です。
+goの学習と共にclean architectureとDDDについても考えなら実装していきます。
