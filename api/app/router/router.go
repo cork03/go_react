@@ -17,10 +17,11 @@ func NewRouter() *echo.Echo {
 	})
 
 	db := db.Main()
-	CompanyGateway := gateway.NewCompanyGateway(driver.NewCompanyDriver(db))
+	CompanyDriver := driver.NewCompanyDriver(db)
+	CompanyGateway := gateway.NewCompanyGateway(CompanyDriver)
 	SignUpUsecase := usecase.NewSignUpUsecase(CompanyGateway)
-	controller := controller.NewUserController(SignUpUsecase)
-	e.POST("/signup", controller.SignUp)
+	SignUpController := controller.NewUserController(SignUpUsecase)
+	e.POST("/signup", SignUpController.SignUp)
 
 	return e
 }
