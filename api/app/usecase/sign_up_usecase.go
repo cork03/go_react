@@ -13,7 +13,6 @@ type ISignUpUsecase interface {
 }
 
 type signUpUsecase struct {
-	companyGateway           gatewayBoundary.ICompanyGateway
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
 }
 
@@ -29,21 +28,17 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 		return err
 	}
 	// draft会社の登録
-	if err := signUpUsecase.companyGateway.Register(input.Company); err != nil {
-		return err
-	}
 	// draftユーザーの登録
+	// draftPasswordの登録
 	// メール送信
 
 	return nil
 }
 
 func NewSignUpUsecase(
-	companyGateway gatewayBoundary.ICompanyGateway,
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway,
 ) ISignUpUsecase {
 	return &signUpUsecase{
-		companyGateway:           companyGateway,
 		mailCertificationGateway: mailCertificationGateway,
 	}
 }
