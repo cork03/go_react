@@ -4,7 +4,7 @@ goの学習と共にclean architectureとDDDについても考えなら実装し
 
 ## 使用技術
 * DI
- * fxを使用する。wireがgithub上ではstarの数が多いけど機能追加やアップデートがなさそうなので却下。
+  *  fxを使用する。wireがgithub上ではstarの数が多いけど機能追加やアップデートがなさそうなので却下。
 
 ## 考え中ポイント
 * clean architecture的に行くとdbの関心ごとをusecaseに持ち込めないけどどうやってトランザクションを貼れば良いのか？
