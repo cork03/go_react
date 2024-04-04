@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: factory-api-mail-service
+  labels:
+    app: factory-api-mail-service
+spec:
+  selector:
+    app: factory-api-mail
+  ports:
+  - name: mail-ui
+    port: 8025
+    targetPort: 8025
+  - name: mail-smtp
+    port: 1025
+    targetPort: 1025

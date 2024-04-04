@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"go-rest-api/domain"
 	"go-rest-api/gatewayBoundary"
+	"go-rest-api/gatewayBoundary/mail"
 	"go-rest-api/usecase/input"
 	"time"
 )
@@ -15,6 +16,7 @@ type ISignUpUsecase interface {
 type signUpUsecase struct {
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
 	draftGateway             gatewayBoundary.IDraftGateway
+	mailSendGateway          mail.IMailSendGateway
 }
 
 func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
@@ -40,17 +42,21 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 	if draftErr != nil {
 		return draftErr
 	}
-	// メール送信
-	println(user.Email)
+	// メール送信 @todo 非同期でやりたい
+	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email); mailSendErr != nil {
+		return mailSendErr
+	}
 	return nil
 }
 
 func NewSignUpUsecase(
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway,
 	draftCompanyGateway gatewayBoundary.IDraftGateway,
+	mailSendGateway mail.IMailSendGateway,
 ) ISignUpUsecase {
 	return &signUpUsecase{
 		mailCertificationGateway: mailCertificationGateway,
 		draftGateway:             draftCompanyGateway,
+		mailSendGateway:          mailSendGateway,
 	}
 }

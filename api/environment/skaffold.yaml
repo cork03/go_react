@@ -18,9 +18,18 @@ profiles:
         releases:
           - name: factory-db
             chartPath: ./db/helm
-            namespace: factory
+          - name: factory-mail
+            chartPath: ./mail/helm
     portForward:
       - resourceType: Service
         resourceName: factory-api-db-service
         port: 3306
         localPort: 3307
+      - resourceType: Service
+        resourceName: factory-api-mail-service
+        port: 8025
+        localPort: 8025
+      - resourceType: Service
+        resourceName: factory-api-mail-service
+        port: 1025
+        localPort: 1025

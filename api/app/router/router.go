@@ -5,7 +5,9 @@ import (
 	"go-rest-api/controller"
 	"go-rest-api/db"
 	"go-rest-api/driver"
+	mailDriver "go-rest-api/driver/mail"
 	"go-rest-api/gateway"
+	"go-rest-api/gateway/mail"
 	"go-rest-api/usecase"
 	"gorm.io/gorm"
 )
@@ -28,6 +30,8 @@ func createSignUpController(db *gorm.DB) *controller.SignUpController {
 	MailCertificationGateway := gateway.NewMailCertificationGateway(MailCertificationDriver)
 	DraftCompanyDriver := driver.NewDraftDriver(db)
 	DraftCompanyGateway := gateway.NewDraftGateway(DraftCompanyDriver)
-	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway, DraftCompanyGateway)
+	MailSendDriver := mailDriver.NewMailSendDriver()
+	MailSendGateway := mail.NewMailSendGateway(MailSendDriver)
+	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway, DraftCompanyGateway, MailSendGateway)
 	return controller.NewUserController(SignUpUsecase)
 }

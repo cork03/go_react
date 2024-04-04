@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factory-api-mail
+  labels:
+    app: factory-api-mail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: factory-api-mail
+  template:
+    metadata:
+      labels:
+        app: factory-api-mail
+    spec:
+      containers:
+      - name: factory-api-mail
+        image: axllent/mailpit
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8025
+        - containerPort: 1025
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
