@@ -8,11 +8,11 @@ import (
 	"net/http"
 )
 
-type UserController struct {
+type SignUpController struct {
 	signUpUsecase usecase.ISignUpUsecase
 }
 
-func (userController *UserController) SignUp(c echo.Context) error {
+func (userController *SignUpController) SignUp(c echo.Context) error {
 	signUpRequest := signUpRequest{}
 	if err := c.Bind(&signUpRequest); err != nil {
 		return err
@@ -52,6 +52,6 @@ type signUpRequest struct {
 	User    UserRequest    `json:"user"`
 }
 
-func NewUserController(signUpUsecase usecase.ISignUpUsecase) UserController {
-	return UserController{signUpUsecase: signUpUsecase}
+func NewUserController(signUpUsecase usecase.ISignUpUsecase) *SignUpController {
+	return &SignUpController{signUpUsecase: signUpUsecase}
 }

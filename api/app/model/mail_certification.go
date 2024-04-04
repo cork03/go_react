@@ -15,6 +15,11 @@ type DraftUser struct {
 	MailCertificationID uint   `gorm:"not null"`
 	Email               string `gorm:"not null"`
 	Name                string `gorm:"not null"`
+}
+
+type DraftUserPassword struct {
+	ID                  uint
+	MailCertificationID uint   `gorm:"not null"`
 	Password            string `gorm:"not null"`
 }
 
@@ -26,5 +31,5 @@ type DraftCompany struct {
 	Prefecture          string `gorm:"not null;type:varchar(255)"`
 	Town                string `gorm:"not null;type:varchar(255)"`
 	Area                string `gorm:"not null;type:varchar(255)"`
-	Tel                 uint   `gorm:"not null;type:varchar(255)"`
+	Tel                 string `gorm:"not null;type:varchar(255)"`
 }

@@ -14,6 +14,7 @@ type ISignUpUsecase interface {
 
 type signUpUsecase struct {
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
+	draftCompanyGateway      gatewayBoundary.IDraftCompanyGateway
 }
 
 func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
@@ -24,10 +25,14 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 		Token:  uuid,
 		Expire: time.Now().Add(time.Hour * 24).In(location),
 	}
-	if err := signUpUsecase.mailCertificationGateway.Create(mailCertification); err != nil {
-		return err
+	resMailCertification, mailCertificationErr := signUpUsecase.mailCertificationGateway.Create(mailCertification)
+	if mailCertificationErr != nil {
+		return mailCertificationErr
 	}
 	// draft会社の登録
+	if draftCompanyErr := signUpUsecase.draftCompanyGateway.Create(input.Company, resMailCertification.ID); draftCompanyErr != nil {
+		return draftCompanyErr
+	}
 	// draftユーザーの登録
 	// draftPasswordの登録
 	// メール送信
@@ -37,8 +42,10 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 
 func NewSignUpUsecase(
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway,
+	draftCompanyGateway gatewayBoundary.IDraftCompanyGateway,
 ) ISignUpUsecase {
 	return &signUpUsecase{
 		mailCertificationGateway: mailCertificationGateway,
+		draftCompanyGateway:      draftCompanyGateway,
 	}
 }

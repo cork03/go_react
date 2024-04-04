@@ -7,6 +7,7 @@ import (
 	"go-rest-api/driver"
 	"go-rest-api/gateway"
 	"go-rest-api/usecase"
+	"gorm.io/gorm"
 )
 
 func NewRouter() *echo.Echo {
@@ -17,11 +18,16 @@ func NewRouter() *echo.Echo {
 	})
 
 	db := db.Main()
-	MailCertificationDriver := driver.NewMailCertificationDriver(db)
-	MailCertificationGateway := gateway.NewMailCertificationGateway(MailCertificationDriver)
-	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway)
-	SignUpController := controller.NewUserController(SignUpUsecase)
-	e.POST("/signup", SignUpController.SignUp)
+	e.POST("/signup", createSignUpController(db).SignUp)
 
 	return e
+}
+
+func createSignUpController(db *gorm.DB) *controller.SignUpController {
+	MailCertificationDriver := driver.NewMailCertificationDriver(db)
+	MailCertificationGateway := gateway.NewMailCertificationGateway(MailCertificationDriver)
+	DraftCompanyDriver := driver.NewDraftCompanyDriver(db)
+	DraftCompanyGateway := gateway.NewDraftCompanyGateway(DraftCompanyDriver)
+	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway, DraftCompanyGateway)
+	return controller.NewUserController(SignUpUsecase)
 }

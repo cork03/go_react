@@ -11,15 +11,21 @@ type MailCertificationGateway struct {
 	MailCertificationDriver driverBoundary.IMailCertificationDriver
 }
 
-func (mailCertificationGateway *MailCertificationGateway) Create(mailCertification domain.MailCertification) error {
+func (mailCertificationGateway *MailCertificationGateway) Create(mailCertification domain.MailCertification) (domain.MailCertification, error) {
 	mailCertificationModel := model.MailCertification{
 		Token:  mailCertification.Token,
 		Expire: mailCertification.Expire,
 	}
-	if err := mailCertificationGateway.MailCertificationDriver.Create(mailCertificationModel); err != nil {
-		return err
+	resMailCertificationModel, err := mailCertificationGateway.MailCertificationDriver.Create(mailCertificationModel)
+	if err != nil {
+		return domain.MailCertification{}, err
 	}
-	return nil
+	resMailCertification := domain.MailCertification{
+		ID:     resMailCertificationModel.ID,
+		Token:  resMailCertificationModel.Token,
+		Expire: resMailCertificationModel.Expire,
+	}
+	return resMailCertification, nil
 }
 
 func NewMailCertificationGateway(mailCertificationDriver driverBoundary.IMailCertificationDriver) gatewayBoundary.IMailCertificationGateway {
