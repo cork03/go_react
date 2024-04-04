@@ -24,6 +24,7 @@ func main() {
 		&model.MailCertification{},
 		&model.DraftCompany{},
 		&model.DraftUser{},
+		&model.DraftUserPassword{},
 	)
 	if err != nil {
 		fmt.Println(err)

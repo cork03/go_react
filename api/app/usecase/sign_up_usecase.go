@@ -14,10 +14,11 @@ type ISignUpUsecase interface {
 
 type signUpUsecase struct {
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
-	draftCompanyGateway      gatewayBoundary.IDraftCompanyGateway
+	draftGateway             gatewayBoundary.IDraftGateway
 }
 
 func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
+	// @todo 既に登録されているメールアドレスかどうかを確認
 	// メール認証のためのトークンを生成
 	uuid := uuid.NewString()
 	location, _ := time.LoadLocation("Asia/Tokyo")
@@ -29,23 +30,27 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 	if mailCertificationErr != nil {
 		return mailCertificationErr
 	}
-	// draft会社の登録
-	if draftCompanyErr := signUpUsecase.draftCompanyGateway.Create(input.Company, resMailCertification.ID); draftCompanyErr != nil {
-		return draftCompanyErr
+	// draft情報の登録
+	user, draftErr := signUpUsecase.draftGateway.Create(
+		input.Company,
+		input.User,
+		input.UserPassword,
+		resMailCertification.ID,
+	)
+	if draftErr != nil {
+		return draftErr
 	}
-	// draftユーザーの登録
-	// draftPasswordの登録
 	// メール送信
-
+	println(user.Email)
 	return nil
 }
 
 func NewSignUpUsecase(
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway,
-	draftCompanyGateway gatewayBoundary.IDraftCompanyGateway,
+	draftCompanyGateway gatewayBoundary.IDraftGateway,
 ) ISignUpUsecase {
 	return &signUpUsecase{
 		mailCertificationGateway: mailCertificationGateway,
-		draftCompanyGateway:      draftCompanyGateway,
+		draftGateway:             draftCompanyGateway,
 	}
 }

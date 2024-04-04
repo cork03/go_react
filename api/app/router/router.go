@@ -26,8 +26,8 @@ func NewRouter() *echo.Echo {
 func createSignUpController(db *gorm.DB) *controller.SignUpController {
 	MailCertificationDriver := driver.NewMailCertificationDriver(db)
 	MailCertificationGateway := gateway.NewMailCertificationGateway(MailCertificationDriver)
-	DraftCompanyDriver := driver.NewDraftCompanyDriver(db)
-	DraftCompanyGateway := gateway.NewDraftCompanyGateway(DraftCompanyDriver)
+	DraftCompanyDriver := driver.NewDraftDriver(db)
+	DraftCompanyGateway := gateway.NewDraftGateway(DraftCompanyDriver)
 	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway, DraftCompanyGateway)
 	return controller.NewUserController(SignUpUsecase)
 }

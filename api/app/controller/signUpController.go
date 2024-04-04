@@ -17,14 +17,25 @@ func (userController *SignUpController) SignUp(c echo.Context) error {
 	if err := c.Bind(&signUpRequest); err != nil {
 		return err
 	}
-	signUpUsecaseInput := input.SignUpInput{Company: domain.Company{
-		Name:       signUpRequest.Company.Name,
-		PostalCode: signUpRequest.Company.PostalCode,
-		Prefecture: signUpRequest.Company.Prefecture,
-		Town:       signUpRequest.Company.Town,
-		Area:       signUpRequest.Company.Area,
-		Tel:        signUpRequest.Company.Tel,
-	}}
+	userPassword, passwordErr := domain.NewUserPassword(signUpRequest.User.Password)
+	if passwordErr != nil {
+		return passwordErr
+	}
+	signUpUsecaseInput := input.SignUpInput{
+		Company: domain.Company{
+			Name:       signUpRequest.Company.Name,
+			PostalCode: signUpRequest.Company.PostalCode,
+			Prefecture: signUpRequest.Company.Prefecture,
+			Town:       signUpRequest.Company.Town,
+			Area:       signUpRequest.Company.Area,
+			Tel:        signUpRequest.Company.Tel,
+		},
+		User: domain.User{
+			Name:  signUpRequest.User.Name,
+			Email: signUpRequest.User.Email,
+		},
+		UserPassword: userPassword,
+	}
 	err := userController.signUpUsecase.SignUp(signUpUsecaseInput)
 	if err != nil {
 		return err
