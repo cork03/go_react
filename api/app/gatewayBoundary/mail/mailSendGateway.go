@@ -1,5 +1,5 @@
 package mail
 
 type IMailSendGateway interface {
-	SendMailCertification(email string) error
+	SendMailCertification(email string, token string) error
 }

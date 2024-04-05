@@ -9,8 +9,8 @@ type MailSendGateway struct {
 	mailSendDriver mailDriver.IMailSendDriver
 }
 
-func (sendGateway MailSendGateway) SendMailCertification(email string) error {
-	if err := sendGateway.mailSendDriver.SendMailCertification(email); err != nil {
+func (sendGateway MailSendGateway) SendMailCertification(email string, token string) error {
+	if err := sendGateway.mailSendDriver.SendMailCertification(email, token); err != nil {
 		return err
 	}
 	return nil

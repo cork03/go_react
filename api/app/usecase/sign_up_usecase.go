@@ -43,7 +43,7 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 		return draftErr
 	}
 	// メール送信 @todo 非同期でやりたい
-	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email); mailSendErr != nil {
+	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email, mailCertification.Token); mailSendErr != nil {
 		return mailSendErr
 	}
 	return nil
