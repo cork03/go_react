@@ -7,3 +7,7 @@ type SignUpInput struct {
 	User         domain.User
 	UserPassword domain.UserPassword
 }
+
+type MailCertificationInput struct {
+	Token string
+}

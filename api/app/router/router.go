@@ -20,7 +20,9 @@ func NewRouter() *echo.Echo {
 	})
 
 	db := db.Main()
-	e.POST("/signup", createSignUpController(db).SignUp)
+	signUpController := createSignUpController(db)
+	e.POST("/signup", signUpController.SignUp)
+	e.POST("/mail-certification", signUpController.MailCertification)
 
 	return e
 }

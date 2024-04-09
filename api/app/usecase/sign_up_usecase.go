@@ -9,7 +9,15 @@ import (
 	"time"
 )
 
+type ExpiredError struct {
+}
+
+func (e ExpiredError) Error() string {
+	return "認証期限が切れています"
+}
+
 type ISignUpUsecase interface {
+	MailCertification(input input.MailCertificationInput) error
 	SignUp(input input.SignUpInput) error
 }
 
@@ -17,6 +25,22 @@ type signUpUsecase struct {
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
 	draftGateway             gatewayBoundary.IDraftGateway
 	mailSendGateway          mail.IMailSendGateway
+}
+
+func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificationInput) error {
+	// トークンからメール認証情報を取得
+	mailCertification, getByTokenErr := signUpUsecase.mailCertificationGateway.GetByToken(input.Token)
+	if getByTokenErr != nil {
+		// エラーとmaiCertification中身がないもの両方が含まれている
+		return getByTokenErr
+	}
+	// 期限切れならエラー
+	location, _ := time.LoadLocation("Asia/Tokyo")
+	if time.Now().In(location).After(mailCertification.Expire) {
+		return ExpiredError{}
+	}
+	// 問題なければユーザー情報を登録して本登録
+	return nil
 }
 
 func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
