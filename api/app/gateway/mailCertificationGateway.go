@@ -28,20 +28,39 @@ func (mailCertificationGateway *MailCertificationGateway) Create(mailCertificati
 	return resMailCertification, nil
 }
 
-func (mailCertificationGateway *MailCertificationGateway) GetByToken(token string) (*domain.MailCertification, error) {
-	resMailCertificationModel, err := mailCertificationGateway.MailCertificationDriver.GetByToken(token)
+func (mailCertificationGateway *MailCertificationGateway) GetDraftsByToken(token string) (*domain.Drafts, error) {
+	resMailCertificationModel, err := mailCertificationGateway.MailCertificationDriver.GetByTokenWithDrafts(token)
 	if err != nil {
 		return nil, err
 	}
 	if resMailCertificationModel == nil {
 		return nil, nil
 	}
-	resMailCertification := domain.MailCertification{
-		ID:     resMailCertificationModel.ID,
-		Token:  resMailCertificationModel.Token,
-		Expire: resMailCertificationModel.Expire,
+
+	drafts := domain.Drafts{
+		MailCertification: domain.MailCertification{
+			ID:     resMailCertificationModel.ID,
+			Token:  resMailCertificationModel.Token,
+			Expire: resMailCertificationModel.Expire,
+		},
+		DraftUser: domain.User{
+			Name:  resMailCertificationModel.DraftUser.Name,
+			Email: resMailCertificationModel.DraftUser.Email,
+		},
+		DraftCompany: domain.Company{
+			Name:       resMailCertificationModel.DraftCompany.Name,
+			PostalCode: resMailCertificationModel.DraftCompany.PostalCode,
+			Prefecture: resMailCertificationModel.DraftCompany.Prefecture,
+			Town:       resMailCertificationModel.DraftCompany.Town,
+			Area:       resMailCertificationModel.DraftCompany.Area,
+			Tel:        resMailCertificationModel.DraftCompany.Tel,
+		},
+		DraftUserPassword: domain.DraftUserPassword{
+			Password: resMailCertificationModel.DraftUserPassword.Password,
+		},
 	}
-	return &resMailCertification, nil
+
+	return &drafts, nil
 }
 
 func NewMailCertificationGateway(mailCertificationDriver driverBoundary.IMailCertificationDriver) gatewayBoundary.IMailCertificationGateway {

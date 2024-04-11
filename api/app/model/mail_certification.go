@@ -3,11 +3,12 @@ package model
 import "time"
 
 type MailCertification struct {
-	ID           uint
-	Token        string       `gorm:"not null"`
-	Expire       time.Time    `gorm:"not null"`
-	DraftUser    DraftUser    `gorm:"constraint:OnDelete:CASCADE"`
-	DraftCompany DraftCompany `gorm:"constraint:OnDelete:CASCADE"`
+	ID                uint
+	Token             string            `gorm:"not null"`
+	Expire            time.Time         `gorm:"not null"`
+	DraftUser         DraftUser         `gorm:"constraint:OnDelete:CASCADE"`
+	DraftCompany      DraftCompany      `gorm:"constraint:OnDelete:CASCADE"`
+	DraftUserPassword DraftUserPassword `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 type DraftUser struct {

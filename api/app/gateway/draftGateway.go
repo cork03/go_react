@@ -3,12 +3,37 @@ package gateway
 import (
 	"go-rest-api/domain"
 	"go-rest-api/driverBoundary"
+	"go-rest-api/gateway/dto"
 	"go-rest-api/gatewayBoundary"
 	"go-rest-api/model"
 )
 
 type draftGateway struct {
 	DraftCompanyDriver driverBoundary.IDraftDriver
+	CompanyDriver      driverBoundary.ICompanyDriver
+}
+
+func (draftCompanyGateway *draftGateway) BookRegistration(drafts domain.Drafts) error {
+	draftDto := dto.Drafts{
+		User: model.User{
+			Email: drafts.DraftUser.Email,
+			Name:  drafts.DraftUser.Name,
+		},
+		Company: model.Company{
+			Name:       drafts.DraftCompany.Name,
+			PostalCode: drafts.DraftCompany.PostalCode,
+			Prefecture: drafts.DraftCompany.Prefecture,
+			Town:       drafts.DraftCompany.Town,
+			Area:       drafts.DraftCompany.Area,
+		},
+		UserPassword: model.UserPassword{
+			Password: drafts.DraftUserPassword.Password,
+		},
+	}
+	if err := draftCompanyGateway.CompanyDriver.BookRegistration(draftDto); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (draftCompanyGateway *draftGateway) Create(
@@ -50,6 +75,12 @@ func (draftCompanyGateway *draftGateway) Create(
 	return resUser, nil
 }
 
-func NewDraftGateway(draftCompanyDriver driverBoundary.IDraftDriver) gatewayBoundary.IDraftGateway {
-	return &draftGateway{draftCompanyDriver}
+func NewDraftGateway(
+	draftCompanyDriver driverBoundary.IDraftDriver,
+	companyDriver driverBoundary.ICompanyDriver,
+) gatewayBoundary.IDraftGateway {
+	return &draftGateway{
+		draftCompanyDriver,
+		companyDriver,
+	}
 }

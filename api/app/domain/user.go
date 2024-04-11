@@ -11,6 +11,10 @@ type UserPassword struct {
 	password string
 }
 
+type DraftUserPassword struct {
+	Password string
+}
+
 func (userPassword UserPassword) GetPassword() string {
 	return userPassword.password
 }

@@ -28,21 +28,26 @@ type signUpUsecase struct {
 }
 
 func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificationInput) error {
+	// @todo 既に登録されているメールアドレスかどうかを確認
+
 	// トークンからメール認証情報を取得
-	mailCertification, getByTokenErr := signUpUsecase.mailCertificationGateway.GetByToken(input.Token)
+	drafts, getByTokenErr := signUpUsecase.mailCertificationGateway.GetDraftsByToken(input.Token)
 	if getByTokenErr != nil {
 		return getByTokenErr
 	}
 	// 認証情報がなければエラー
-	if mailCertification == nil {
+	if drafts == nil {
 		return CanNotAuthorized{}
 	}
 	// 期限切れならエラー
 	location, _ := time.LoadLocation("Asia/Tokyo")
-	if time.Now().In(location).After(mailCertification.Expire) {
+	if time.Now().In(location).After(drafts.MailCertification.Expire) {
 		return CanNotAuthorized{}
 	}
 	// 問題なければユーザー情報を登録して本登録
+	if signUpErr := signUpUsecase.draftGateway.BookRegistration(*drafts); signUpErr != nil {
+		return signUpErr
+	}
 	return nil
 }
 

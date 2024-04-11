@@ -9,4 +9,5 @@ type IDraftGateway interface {
 		userPassword domain.UserPassword,
 		mailCertificationId uint,
 	) (domain.User, error)
+	BookRegistration(drafts domain.Drafts) error
 }

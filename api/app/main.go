@@ -16,10 +16,11 @@ func main() {
 	if loadErr != nil {
 		println(loadErr)
 	}
-	//ログの設定 @todo 本番と開発で設定を変えレルようにする
+	//ログの設定 @todo 本番と開発で設定を変えられるようにする
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 
 	db := db.Main()
+	// @todo マイグレーションの実行をどこかに移す
 	err := db.AutoMigrate(
 		&model.Company{},
 		&model.User{},

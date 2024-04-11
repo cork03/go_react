@@ -11,5 +11,5 @@ type User struct {
 type UserPassword struct {
 	ID       uint
 	Password string `gorm:"not null"`
-	UserId   uint   `gorm:"not null"`
+	UserID   uint   `gorm:"not null"`
 }

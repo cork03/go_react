@@ -19,9 +19,13 @@ func (mailCertificationDriver *MailCertificationDriver) Create(mailCertification
 	return mailCertification, nil
 }
 
-func (mailCertificationDriver *MailCertificationDriver) GetByToken(token string) (*model.MailCertification, error) {
+func (mailCertificationDriver *MailCertificationDriver) GetByTokenWithDrafts(token string) (*model.MailCertification, error) {
 	mailCertification := model.MailCertification{}
-	err := mailCertificationDriver.db.Where("token = ?", token).First(&mailCertification).Error
+	err := mailCertificationDriver.db.Where("token = ?", token).
+		Joins("DraftUser").
+		Joins("DraftCompany").
+		Joins("DraftUserPassword").
+		First(&mailCertification).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
