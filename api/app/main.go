@@ -6,6 +6,7 @@ import (
 	"go-rest-api/db"
 	"go-rest-api/model"
 	"go-rest-api/router"
+	"log/slog"
 	"os"
 )
 
@@ -15,6 +16,8 @@ func main() {
 	if loadErr != nil {
 		println(loadErr)
 	}
+	//ログの設定 @todo 本番と開発で設定を変えレルようにする
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 
 	db := db.Main()
 	err := db.AutoMigrate(

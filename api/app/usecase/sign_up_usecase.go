@@ -9,11 +9,11 @@ import (
 	"time"
 )
 
-type ExpiredError struct {
+type CanNotAuthorized struct {
 }
 
-func (e ExpiredError) Error() string {
-	return "認証期限が切れています"
+func (e CanNotAuthorized) Error() string {
+	return ""
 }
 
 type ISignUpUsecase interface {
@@ -31,13 +31,16 @@ func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificat
 	// トークンからメール認証情報を取得
 	mailCertification, getByTokenErr := signUpUsecase.mailCertificationGateway.GetByToken(input.Token)
 	if getByTokenErr != nil {
-		// エラーとmaiCertification中身がないもの両方が含まれている
 		return getByTokenErr
+	}
+	// 認証情報がなければエラー
+	if mailCertification == nil {
+		return CanNotAuthorized{}
 	}
 	// 期限切れならエラー
 	location, _ := time.LoadLocation("Asia/Tokyo")
 	if time.Now().In(location).After(mailCertification.Expire) {
-		return ExpiredError{}
+		return CanNotAuthorized{}
 	}
 	// 問題なければユーザー情報を登録して本登録
 	return nil
@@ -66,7 +69,7 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 	if draftErr != nil {
 		return draftErr
 	}
-	// メール送信 @todo 非同期でやりたい
+	// メール送信 @todo queueにいれて非同期でやりたい
 	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email, mailCertification.Token); mailSendErr != nil {
 		return mailSendErr
 	}
