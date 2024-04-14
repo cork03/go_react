@@ -2,7 +2,7 @@ package model
 
 type User struct {
 	ID           uint
-	Email        string       `gorm:"not null"`
+	Email        string       `gorm:"not null;unique"`
 	Name         string       `gorm:"not null"`
 	CompanyID    uint         `gorm:"not null"`
 	UserPassword UserPassword `gorm:"constraint:OnDelete:CASCADE"`

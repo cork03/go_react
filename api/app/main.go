@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	"go-rest-api/db"
-	"go-rest-api/model"
 	"go-rest-api/router"
 	"log/slog"
 	"os"
@@ -18,21 +16,6 @@ func main() {
 	}
 	//ログの設定 @todo 本番と開発で設定を変えられるようにする
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
-
-	db := db.Main()
-	// @todo マイグレーションの実行をどこかに移す
-	err := db.AutoMigrate(
-		&model.Company{},
-		&model.User{},
-		&model.UserPassword{},
-		&model.MailCertification{},
-		&model.DraftCompany{},
-		&model.DraftUser{},
-		&model.DraftUserPassword{},
-	)
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	e := router.NewRouter()
 	e.Logger.Fatal(e.Start(fmt.Sprintf("localhost:%s", os.Getenv("APP_PORT"))))
