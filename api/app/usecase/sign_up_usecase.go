@@ -75,7 +75,7 @@ func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
 		return draftErr
 	}
 	// メール送信 @todo queueにいれて非同期でやりたい
-	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email, mailCertification.Token); mailSendErr != nil {
+	if mailSendErr := signUpUsecase.mailSendGateway.SendMailCertification(user.Email, mailCertification.Token, mailCertification.Expire); mailSendErr != nil {
 		return mailSendErr
 	}
 	return nil
