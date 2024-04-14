@@ -35,6 +35,14 @@ func createSignUpController(db *gorm.DB) *controller.SignUpController {
 	DraftCompanyGateway := gateway.NewDraftGateway(DraftCompanyDriver, CompanyDriver)
 	MailSendDriver := mailDriver.NewMailSendDriver()
 	MailSendGateway := mail.NewMailSendGateway(MailSendDriver)
-	SignUpUsecase := usecase.NewSignUpUsecase(MailCertificationGateway, DraftCompanyGateway, MailSendGateway)
+	userDriver := driver.NewUserDriver(db)
+	UserGateway := gateway.NewUserGateway(userDriver)
+
+	SignUpUsecase := usecase.NewSignUpUsecase(
+		MailCertificationGateway,
+		DraftCompanyGateway,
+		MailSendGateway,
+		UserGateway,
+	)
 	return controller.NewUserController(SignUpUsecase)
 }

@@ -16,6 +16,12 @@ func (e CanNotAuthorized) Error() string {
 	return ""
 }
 
+type ExistUser struct{}
+
+func (e ExistUser) Error() string {
+	return ""
+}
+
 type ISignUpUsecase interface {
 	MailCertification(input input.MailCertificationInput) error
 	SignUp(input input.SignUpInput) error
@@ -24,6 +30,7 @@ type ISignUpUsecase interface {
 type signUpUsecase struct {
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway
 	draftGateway             gatewayBoundary.IDraftGateway
+	userGateway              gatewayBoundary.IUserGateway
 	mailSendGateway          mail.IMailSendGateway
 }
 
@@ -52,7 +59,14 @@ func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificat
 }
 
 func (signUpUsecase *signUpUsecase) SignUp(input input.SignUpInput) error {
-	// @todo 既に登録されているメールアドレスかどうかを確認
+	// 既に登録されているかのチェック
+	existUser, existUserErr := signUpUsecase.userGateway.ExistByEmail(input.User.Email)
+	if existUserErr != nil {
+		return existUserErr
+	}
+	if existUser {
+		return ExistUser{}
+	}
 	// メール認証のためのトークンを生成
 	uuid := uuid.NewString()
 	location, _ := time.LoadLocation("Asia/Tokyo")
@@ -85,10 +99,12 @@ func NewSignUpUsecase(
 	mailCertificationGateway gatewayBoundary.IMailCertificationGateway,
 	draftCompanyGateway gatewayBoundary.IDraftGateway,
 	mailSendGateway mail.IMailSendGateway,
+	userGateway gatewayBoundary.IUserGateway,
 ) ISignUpUsecase {
 	return &signUpUsecase{
 		mailCertificationGateway: mailCertificationGateway,
 		draftGateway:             draftCompanyGateway,
 		mailSendGateway:          mailSendGateway,
+		userGateway:              userGateway,
 	}
 }

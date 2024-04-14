@@ -40,6 +40,9 @@ func (signUpController *SignUpController) SignUp(c echo.Context) error {
 		UserPassword: userPassword,
 	}
 	err := signUpController.signUpUsecase.SignUp(signUpUsecaseInput)
+	if errors.Is(err, usecase.ExistUser{}) {
+		return c.JSON(http.StatusBadRequest, errorResponse{Message: "既に登録されているメールアドレスです。"})
+	}
 	if err != nil {
 		return err
 	}
