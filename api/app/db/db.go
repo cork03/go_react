@@ -28,7 +28,8 @@ func Main() *gorm.DB {
 		},
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: gormLogger,
+		Logger:                 gormLogger,
+		SkipDefaultTransaction: true,
 	})
 	if err != nil {
 		println(err)
