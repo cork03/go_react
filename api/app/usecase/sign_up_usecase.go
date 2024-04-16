@@ -35,8 +35,6 @@ type signUpUsecase struct {
 }
 
 func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificationInput) error {
-	// @todo 既に登録されているメールアドレスかどうかを確認
-
 	// トークンからメール認証情報を取得
 	drafts, getByTokenErr := signUpUsecase.mailCertificationGateway.GetDraftsByToken(input.Token)
 	if getByTokenErr != nil {
@@ -45,6 +43,14 @@ func (signUpUsecase *signUpUsecase) MailCertification(input input.MailCertificat
 	// 認証情報がなければエラー
 	if drafts == nil {
 		return CanNotAuthorized{}
+	}
+	// 既に存在するユーザーならエラー
+	existUser, existUserErr := signUpUsecase.userGateway.ExistByEmail(drafts.DraftUser.Email)
+	if existUserErr != nil {
+		return existUserErr
+	}
+	if existUser {
+		return ExistUser{}
 	}
 	// 期限切れならエラー
 	location, _ := time.LoadLocation("Asia/Tokyo")

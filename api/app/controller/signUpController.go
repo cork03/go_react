@@ -80,6 +80,9 @@ func (signUpController *SignUpController) MailCertification(c echo.Context) erro
 			Token: mailCertificationRequest.Token,
 		},
 	)
+	if errors.Is(err, usecase.ExistUser{}) {
+		return c.JSON(http.StatusBadRequest, errorResponse{Message: "既に登録されているメールアドレスです。"})
+	}
 	if errors.Is(err, usecase.CanNotAuthorized{}) {
 		return c.JSON(http.StatusUnauthorized, errorResponse{Message: "認証期限が切れている。または無効なURLです。"})
 	}
