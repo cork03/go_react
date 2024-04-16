@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
 	"os"
+	"time"
 )
 
 func Main() *gorm.DB {
@@ -16,7 +19,17 @@ func Main() *gorm.DB {
 		os.Getenv("MYSQL_PORT"),
 		os.Getenv("MYSQL_DB"),
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// @ todo devではinfoに吐く本番だと特定のログに吐く
+	gormLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: 2 * time.Second,
+			LogLevel:      logger.Info,
+		},
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: gormLogger,
+	})
 	if err != nil {
 		println(err)
 	}
