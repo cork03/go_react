@@ -16,7 +16,7 @@ type draftGateway struct {
 func (draftCompanyGateway *draftGateway) BookRegistration(drafts domain.Drafts) error {
 	draftDto := dto.Drafts{
 		User: model.User{
-			Email: drafts.DraftUser.Email,
+			Email: "tsubasa123@example.com",
 			Name:  drafts.DraftUser.Name,
 		},
 		Company: model.Company{
